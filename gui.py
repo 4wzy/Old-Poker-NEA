@@ -1,6 +1,7 @@
 import sys
-from PySide6.QtGui import QPixmap
-from PySide6.QtWidgets import QApplication, QWidget, QMainWindow, QPushButton, QVBoxLayout, QHBoxLayout, QLabel
+import qdarktheme
+from PySide6.QtGui import QPixmap, QColor, QPen, QBrush
+from PySide6.QtWidgets import QApplication, QWidget, QMainWindow, QPushButton, QVBoxLayout, QHBoxLayout, QLabel, QGraphicsView, QGraphicsScene, QGraphicsEllipseItem
 
 from poker_game import game
 
@@ -54,12 +55,33 @@ class MainWindow(QMainWindow):
         for label in self.labels[2:]:
             vLayout2.addWidget(label)
 
+        # create a QGraphicsView widget and set its scene to a new QGraphicsScene
+        view = QGraphicsView()
+        self.scene = QGraphicsScene()
+        view.setScene(self.scene)
+
+        # add the poker table to the scene
+        table_radius = 200
+        table_pen_width = 5
+        table_brush_color = QColor(0, 255, 0)
+        table_pen_color = QColor(0, 0, 0)
+
+        table = QGraphicsEllipseItem(-table_radius, -
+                                     table_radius, 2*table_radius, 2*table_radius)
+        pen = QPen(table_pen_color)
+        pen.setWidth(table_pen_width)
+        brush = QBrush(table_brush_color)
+        table.setPen(pen)
+        table.setBrush(brush)
+        self.scene.addItem(table)
+
         # --- Testing
         for p in game.players:
             for c in p.hand.cards:
                 print(c)
 
         hLayout.addLayout(vLayout1)
+        hLayout.addWidget(view)
         hLayout.addLayout(vLayout2)
 
         # set the main widget
@@ -70,6 +92,7 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    qdarktheme.setup_theme()
     window = MainWindow()
     window.show()
     sys.exit(app.exec())
