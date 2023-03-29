@@ -10,84 +10,54 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("Texas Hold'Em Poker")
+        # Set main window properties
+        self.setWindowTitle("Texas Hold'em Poker Game")
+        self.setFixedSize(1000, 800)
 
-        # Create poker card images
-        cards = []
-        for player in game.players:
-            for card in player.hand.cards:
-                cards.append(f"{card.rank}_of_{card.suit}")
+        # Create central widget
+        central_widget = QWidget()
+        self.setCentralWidget(central_widget)
 
-        self.labels = []
-        for card in cards:
-            pixmap = QPixmap(f"images/cards/{card}")
-            # Sets the width=100 and height=140
-            pixmap = pixmap.scaled(100, 140)
-            label = QLabel()
-            label.setPixmap(pixmap)
-            self.labels.append(label)
+        # Add poker table image to central widget
+        poker_table_label = QLabel(central_widget)
+        # Replace with path to your own image
+        poker_table_label.setPixmap("poker_table.png")
+        # Adjust positioning and size as necessary
+        poker_table_label.setGeometry(200, 100, 600, 500)
 
-        # create buttons and labels
-        self.checkButton = QPushButton("Check")
-        self.foldButton = QPushButton("Fold")
-        self.raiseButton = QPushButton("Raise")
-        self.betButton = QPushButton("Bet")
+        # Create function to load card image based on card string
+        def load_card_image(card_str):
+            card_rank = card_str[:-1]
+            card_suit = card_str[-1]
+            # Replace with path to your own image directory
+            return QPixmap(f"{card_rank}_of_{card_suit}.png")
 
-        self.label1 = QLabel("Player 1:")
-
-        self.label2 = QLabel("Player 2:")
-
-        # create vertical and horizontal layouts
-        vLayout1 = QVBoxLayout()
-        vLayout2 = QVBoxLayout()
-        hLayout = QHBoxLayout()
-
-        # add buttons and labels to the layouts
-        vLayout1.addWidget(self.label1)
-        vLayout1.addWidget(self.checkButton)
-        vLayout1.addWidget(self.foldButton)
-        for label in self.labels[:2]:
-            vLayout1.addWidget(label)
-
-        vLayout2.addWidget(self.label2)
-        vLayout2.addWidget(self.raiseButton)
-        vLayout2.addWidget(self.betButton)
-        for label in self.labels[2:]:
-            vLayout2.addWidget(label)
-
-        # create a QGraphicsView widget and set its scene to a new QGraphicsScene
-        view = QGraphicsView()
-        self.scene = QGraphicsScene()
-        view.setScene(self.scene)
-
-        # add the poker table to the scene
-        table_radius = 200
-        table_pen_width = 5
-        table_brush_color = QColor(0, 255, 0)
-        table_pen_color = QColor(0, 0, 0)
-
-        table = QGraphicsEllipseItem(-table_radius, -
-                                     table_radius, 2*table_radius, 2*table_radius)
-        pen = QPen(table_pen_color)
-        pen.setWidth(table_pen_width)
-        brush = QBrush(table_brush_color)
-        table.setPen(pen)
-        table.setBrush(brush)
-        self.scene.addItem(table)
-
-        # --- Testing
-        for p in game.players:
-            for c in p.hand.cards:
-                print(c)
-
-        hLayout.addLayout(vLayout1)
-        hLayout.addWidget(view)
-        hLayout.addLayout(vLayout2)
-
-        # set the main widget
-        centralWidget = QWidget()
-        centralWidget.setLayout(hLayout)
-        self.setCentralWidget(centralWidget)
+        # Create player widgets
+        players_layout = QHBoxLayout()
+        for i in range(8):
+            player_group_box = QGroupBox(f"Player {i+1}")
+            player_layout = QVBoxLayout()
+            player_name_label = QLabel(f"Player {i+1}")
+            player_icon_label = QLabel(central_widget)
+            # Replace with path to your own image
+            player_icon_label.setPixmap("player_icon.png")
+            player_cards_layout = QHBoxLayout()
+            card1_str = "AS"  # Replace with actual card string for this player's first card
+            card2_str = "KD"  # Replace with actual card string for this player's second card
+            card1_label = QLabel()
+            card1_pixmap = load_card_image(card1_str)
+            card1_label.setPixmap(card1_pixmap)
+            card2_label = QLabel()
+            card2_pixmap = load_card_image(card2_str)
+            card2_label.setPixmap(card2_pixmap)
+            player_cards_layout.addWidget(card1_label)
+            player_cards_layout.addWidget(card2_label)
+            player_layout.addWidget(player_name_label)
+            player_layout.addWidget(player_icon_label)
+            player_layout.addLayout(player_cards_layout)
+            player_group_box.setLayout(player_layout)
+            players_layout.addWidget(player_group_box)
+        central_widget.setLayout(players_layout)
 
 
 if __name__ == "__main__":
