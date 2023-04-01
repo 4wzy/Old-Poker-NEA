@@ -54,6 +54,26 @@ class Game:
         self.deck = Deck()
         self.deck.shuffle()
 
+    def get_player_cards(self):
+        # Create poker card images
+        cards = []
+        for player in self.players:
+            for card in player.hand.cards:
+                cards.append(f"{card.rank}_of_{card.suit}")
+
+        # Show which player has the big blind and the small blind
+        # print(self.small_blind_player_index,
+        #       self.big_blind_player_index)
+
+        return cards
+
+    def get_board_cards(self):
+        cards = []
+        for card in self.board:
+            cards.append(f"{card.rank}_of_{card.suit}")
+
+        return cards
+
     def deal_cards(self, num_cards, player):
         for i in range(num_cards):
             card = self.deck.deal_card()
@@ -74,12 +94,6 @@ class Game:
 
         self.players[self.small_blind_player_index].chips -= self.small_blind_value
         self.pot.add_chips(self.small_blind_value)
-
-    def start_round(self):
-        self.board = []
-        self.handle_blinds()
-        for player in self.players:
-            self.deal_cards(2, player)
 
     def flop(self):
         for i in range(3):
