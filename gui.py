@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'first_basic.ui'
+# Form implementation generated from reading ui file '3rd.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #
@@ -9,16 +9,17 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-import sys
 import qdarktheme
 
-from poker_game import game
+from poker_game import Game
 
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(955, 653)
+        MainWindow.resize(954, 670)
+        MainWindow.setAutoFillBackground(False)
+        MainWindow.setDocumentMode(False)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
 
@@ -31,23 +32,51 @@ class Ui_MainWindow(object):
         self.Table.setScaledContents(True)
         self.Table.setObjectName("Table")
 
+        # Create instance of Poker Game
+
+        game = Game(["Justin", "Megan", "TestPlayer1",
+                     "TestPlayer2", "TestPlayer3", "TestPlayer4"])
+        game.start_round()
+
         # Create poker card images
         cards = []
         for player in game.players:
             for card in player.hand.cards:
                 cards.append(f"{card.rank}_of_{card.suit}")
 
+        # Show which player has the big blind and the small blind
+
+        print(game.small_blind_player_index, game.big_blind_player_index)
+
+        # These are the positions of the first card of each player
+        player_positions = [(390, 410), (70, 400), (30, 90),
+                            (390, 30), (720, 50), (690, 420)]
+
+        def displayBlinds(self):
+            # Creating the QLabel for the big blind label
+            self.big_blind_label = QtWidgets.QLabel(self.centralwidget)
+
+            # Set the geometry of the big blind label based on the position of the player
+            current_player_pos = player_positions[game.big_blind_player_index]
+            self.big_blind_label.setGeometry(QtCore.QRect(
+                current_player_pos[0] - 35, current_player_pos[1], 30, 30))
+            # The position of the big blind label is slightly shifted to stand out
+            self.big_blind_label.setStyleSheet(
+                "background-color: yellow; border-radius: 15px; color: black;")
+            self.big_blind_label.setText("BB")
+            self.big_blind_label.setAlignment(QtCore.Qt.AlignCenter)
+            self.big_blind_label.show()  # Showing the big blind label
         # Show user cards
 
         self.p1_c1 = QtWidgets.QLabel(self.centralwidget)
-        self.p1_c1.setGeometry(QtCore.QRect(390, 420, 71, 101))
+        self.p1_c1.setGeometry(QtCore.QRect(390, 410, 71, 101))
         self.p1_c1.setText("")
         self.p1_c1.setPixmap(QtGui.QPixmap(
             f"images/cards/{cards[0]}"))
         self.p1_c1.setScaledContents(True)
         self.p1_c1.setObjectName("p1_c1")
         self.p1_c2 = QtWidgets.QLabel(self.centralwidget)
-        self.p1_c2.setGeometry(QtCore.QRect(470, 420, 71, 101))
+        self.p1_c2.setGeometry(QtCore.QRect(470, 410, 71, 101))
         self.p1_c2.setText("")
         self.p1_c2.setPixmap(QtGui.QPixmap(
             f"images/cards/{cards[1]}"))
@@ -55,107 +84,97 @@ class Ui_MainWindow(object):
         self.p1_c2.setObjectName("p1_c2")
 
         self.p2_c1 = QtWidgets.QLabel(self.centralwidget)
-        self.p2_c1.setGeometry(QtCore.QRect(790, 410, 71, 101))
+        self.p2_c1.setGeometry(QtCore.QRect(70, 400, 71, 101))
         self.p2_c1.setText("")
         self.p2_c1.setPixmap(QtGui.QPixmap(
             "images/cards/back.jpg"))
         self.p2_c1.setScaledContents(True)
         self.p2_c1.setObjectName("p2_c1")
         self.p2_c2 = QtWidgets.QLabel(self.centralwidget)
-        self.p2_c2.setGeometry(QtCore.QRect(710, 410, 71, 101))
+        self.p2_c2.setGeometry(QtCore.QRect(150, 400, 71, 101))
         self.p2_c2.setText("")
         self.p2_c2.setPixmap(QtGui.QPixmap(
             "images/cards/back.jpg"))
         self.p2_c2.setScaledContents(True)
         self.p2_c2.setObjectName("p2_c2")
+
         self.p3_c1 = QtWidgets.QLabel(self.centralwidget)
-        self.p3_c1.setGeometry(QtCore.QRect(190, 420, 71, 101))
+        self.p3_c1.setGeometry(QtCore.QRect(30, 90, 71, 101))
         self.p3_c1.setText("")
         self.p3_c1.setPixmap(QtGui.QPixmap(
             "images/cards/back.jpg"))
         self.p3_c1.setScaledContents(True)
         self.p3_c1.setObjectName("p3_c1")
         self.p3_c2 = QtWidgets.QLabel(self.centralwidget)
-        self.p3_c2.setGeometry(QtCore.QRect(110, 420, 71, 101))
+        self.p3_c2.setGeometry(QtCore.QRect(110, 90, 71, 101))
         self.p3_c2.setText("")
         self.p3_c2.setPixmap(QtGui.QPixmap(
             "images/cards/back.jpg"))
         self.p3_c2.setScaledContents(True)
         self.p3_c2.setObjectName("p3_c2")
+
         self.p4_c1 = QtWidgets.QLabel(self.centralwidget)
-        self.p4_c1.setGeometry(QtCore.QRect(40, 100, 71, 101))
+        self.p4_c1.setGeometry(QtCore.QRect(390, 30, 71, 101))
         self.p4_c1.setText("")
         self.p4_c1.setPixmap(QtGui.QPixmap(
             "images/cards/back.jpg"))
         self.p4_c1.setScaledContents(True)
         self.p4_c1.setObjectName("p4_c1")
         self.p4_c2 = QtWidgets.QLabel(self.centralwidget)
-        self.p4_c2.setGeometry(QtCore.QRect(120, 100, 71, 101))
+        self.p4_c2.setGeometry(QtCore.QRect(470, 30, 71, 101))
         self.p4_c2.setText("")
         self.p4_c2.setPixmap(QtGui.QPixmap(
             "images/cards/back.jpg"))
         self.p4_c2.setScaledContents(True)
         self.p4_c2.setObjectName("p4_c2")
+
         self.p5_c1 = QtWidgets.QLabel(self.centralwidget)
-        self.p5_c1.setGeometry(QtCore.QRect(390, 40, 71, 101))
+        self.p5_c1.setGeometry(QtCore.QRect(720, 50, 71, 101))
         self.p5_c1.setText("")
         self.p5_c1.setPixmap(QtGui.QPixmap(
             "images/cards/back.jpg"))
         self.p5_c1.setScaledContents(True)
         self.p5_c1.setObjectName("p5_c1")
         self.p5_c2 = QtWidgets.QLabel(self.centralwidget)
-        self.p5_c2.setGeometry(QtCore.QRect(470, 40, 71, 101))
+        self.p5_c2.setGeometry(QtCore.QRect(800, 50, 71, 101))
         self.p5_c2.setText("")
         self.p5_c2.setPixmap(QtGui.QPixmap(
             "images/cards/back.jpg"))
         self.p5_c2.setScaledContents(True)
         self.p5_c2.setObjectName("p5_c2")
+
         self.p6_c1 = QtWidgets.QLabel(self.centralwidget)
-        self.p6_c1.setGeometry(QtCore.QRect(750, 90, 71, 101))
+        self.p6_c1.setGeometry(QtCore.QRect(690, 420, 71, 101))
         self.p6_c1.setText("")
         self.p6_c1.setPixmap(QtGui.QPixmap(
             "images/cards/back.jpg"))
         self.p6_c1.setScaledContents(True)
         self.p6_c1.setObjectName("p6_c1")
         self.p6_c2 = QtWidgets.QLabel(self.centralwidget)
-        self.p6_c2.setGeometry(QtCore.QRect(830, 90, 71, 101))
+        self.p6_c2.setGeometry(QtCore.QRect(770, 420, 71, 101))
+        self.p6_c2.setAutoFillBackground(True)
         self.p6_c2.setText("")
-        self.p6_c2.setPixmap(QtGui.QPixmap(
-            "images/cards/back.jpg"))
+        self.p6_c2.setPixmap(QtGui.QPixmap("images/cards/back.jpg"))
         self.p6_c2.setScaledContents(True)
+        self.p6_c2.setWordWrap(False)
+        self.p6_c2.setOpenExternalLinks(False)
         self.p6_c2.setObjectName("p6_c2")
+
+        self.pushButton_4 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_4.setGeometry(QtCore.QRect(470, 530, 111, 31))
+        self.pushButton_4.setObjectName("pushButton_4")
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton.setGeometry(QtCore.QRect(360, 540, 111, 31))
+        self.pushButton.setGeometry(QtCore.QRect(360, 530, 111, 31))
         self.pushButton.setObjectName("pushButton")
         self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_2.setGeometry(QtCore.QRect(360, 580, 111, 31))
+        self.pushButton_2.setGeometry(QtCore.QRect(360, 560, 111, 31))
         self.pushButton_2.setObjectName("pushButton_2")
         self.pushButton_3 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_3.setGeometry(QtCore.QRect(470, 580, 111, 31))
+        self.pushButton_3.setGeometry(QtCore.QRect(470, 560, 111, 31))
         self.pushButton_3.setObjectName("pushButton_3")
-        self.pushButton_4 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_4.setGeometry(QtCore.QRect(470, 540, 111, 31))
-        self.pushButton_4.setObjectName("pushButton_4")
-        self.Table.raise_()
-        self.p2_c1.raise_()
-        self.p2_c2.raise_()
-        self.p3_c1.raise_()
-        self.p3_c2.raise_()
-        self.p4_c1.raise_()
-        self.p4_c2.raise_()
-        self.p5_c1.raise_()
-        self.p5_c2.raise_()
-        self.p6_c1.raise_()
-        self.p6_c2.raise_()
-        self.p1_c2.raise_()
-        self.p1_c1.raise_()
-        self.pushButton.raise_()
-        self.pushButton_2.raise_()
-        self.pushButton_3.raise_()
-        self.pushButton_4.raise_()
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 955, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 954, 21))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -168,10 +187,10 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.pushButton_4.setText(_translate("MainWindow", "Call"))
         self.pushButton.setText(_translate("MainWindow", "Check"))
         self.pushButton_2.setText(_translate("MainWindow", "Raise"))
         self.pushButton_3.setText(_translate("MainWindow", "Fold"))
-        self.pushButton_4.setText(_translate("MainWindow", "Call"))
 
 
 if __name__ == "__main__":

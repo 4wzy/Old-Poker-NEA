@@ -45,6 +45,10 @@ class Player:
 class Game:
     def __init__(self, player_names, starting_chips=500):
         self.players = [Player(name, starting_chips) for name in player_names]
+        self.big_blind_value = 4
+        self.small_blind_value = 2
+        self.big_blind_player_index = 0
+        self.small_blind_player_index = randint(0, len(self.players) - 1)
         self.pot = Pot()
         self.board = []
         self.deck = Deck()
@@ -55,8 +59,25 @@ class Game:
             card = self.deck.deal_card()
             player.add_card(card)
 
+    def handle_blinds(self):
+        amount_of_players = len(self.players)
+
+        # Increment the small and big blind indexes by 1. Wraps around to the start if needed
+        self.small_blind_player_index = (
+            self.small_blind_player_index + 1) % amount_of_players
+        self.big_blind_player_index = (
+            self.small_blind_player_index + 1) % amount_of_players
+
+        # Deducts the blind values from the appropriate player's chips and adds it to the pot
+        self.players[self.big_blind_player_index].chips -= self.big_blind_value
+        self.pot.add_chips(self.big_blind_value)
+
+        self.players[self.small_blind_player_index].chips -= self.small_blind_value
+        self.pot.add_chips(self.small_blind_value)
+
     def start_round(self):
         self.board = []
+        self.handle_blinds()
         for player in self.players:
             self.deal_cards(2, player)
 
@@ -90,7 +111,3 @@ class Hand:
 
     def evaluate_strength(self):
         pass
-
-
-game = Game(["Justin", "Megan"])
-game.start_round()
