@@ -3,11 +3,6 @@ import gui
 import sys
 
 
-def betting_round(game):
-    # It may be better to define this in poker_game.py
-    pass
-
-
 def poker_round(game):
     # Create the table's deck
     game.board = []
@@ -26,7 +21,7 @@ def poker_round(game):
                      game.small_blind_player_index)
 
     game.flop()
-    betting_round(game)
+    game.betting_round()
     ui.displayBoard(game.get_board_cards())
 
 
