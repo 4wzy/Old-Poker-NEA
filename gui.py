@@ -309,6 +309,42 @@ class Ui_MainWindow(object):
         self.p6_chips.setWordWrap(False)
         self.p6_chips.setObjectName("p6_chips")
 
+        # HANDLE BLINDS TEMPORARILY
+
+        # Creating the QLabel for the big blind label
+        self.big_blind_label = QtWidgets.QLabel(self.centralwidget)
+
+        # Set the geometry of the big blind label based on the position of the player
+        self.big_blind_label.setGeometry(QtCore.QRect(
+            0, 0, 30, 30))
+        # The position of the big blind label is slightly shifted to stand out
+        self.big_blind_label.setStyleSheet(
+            "background-color: red; border-radius: 15px; color: white;")
+        self.big_blind_label.setText("BB")
+        self.big_blind_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.big_blind_label.show()
+
+        self.small_blind_label = QtWidgets.QLabel(self.centralwidget)
+
+        # Set the geometry of the small blind label based on the position of the player
+        self.small_blind_label.setGeometry(QtCore.QRect(
+            0, 0, 30, 30))
+        # The position of the small blind label is slightly shifted to stand out
+        self.small_blind_label.setStyleSheet(
+            "background-color: yellow; border-radius: 15px; color: red;")
+        self.small_blind_label.setText("SB")
+        self.small_blind_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.small_blind_label.show()
+
+        self.dealer_button_label = QtWidgets.QLabel(self.centralwidget)
+        self.dealer_button_label.setGeometry(QtCore.QRect(
+            0, 0, 30, 30))
+        self.dealer_button_label.setStyleSheet(
+            "background-color: white; border-radius: 15px; color: black;")
+        self.dealer_button_label.setText("D")
+        self.dealer_button_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.dealer_button_label.show()
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 954, 21))
@@ -362,42 +398,22 @@ class Ui_MainWindow(object):
         player_positions = [(390, 410), (70, 400), (30, 90),
                             (390, 30), (720, 50), (690, 420)]
 
-        # Creating the QLabel for the big blind label
-        self.big_blind_label = QtWidgets.QLabel(self.centralwidget)
-
         # Set the geometry of the big blind label based on the position of the player
         big_blind_current_player_pos = player_positions[big_blind_player_index]
         self.big_blind_label.setGeometry(QtCore.QRect(
             big_blind_current_player_pos[0] - 30, big_blind_current_player_pos[1], 30, 30))
-        # The position of the big blind label is slightly shifted to stand out
-        self.big_blind_label.setStyleSheet(
-            "background-color: red; border-radius: 15px; color: white;")
-        self.big_blind_label.setText("BB")
-        self.big_blind_label.setAlignment(QtCore.Qt.AlignCenter)
-        self.big_blind_label.show()
-
-        self.small_blind_label = QtWidgets.QLabel(self.centralwidget)
+        # self.big_blind_label.show()
 
         # Set the geometry of the small blind label based on the position of the player
         small_blind_player_pos = player_positions[small_blind_player_index]
         self.small_blind_label.setGeometry(QtCore.QRect(
             small_blind_player_pos[0] - 30, small_blind_player_pos[1], 30, 30))
-        # The position of the small blind label is slightly shifted to stand out
-        self.small_blind_label.setStyleSheet(
-            "background-color: yellow; border-radius: 15px; color: red;")
-        self.small_blind_label.setText("SB")
-        self.small_blind_label.setAlignment(QtCore.Qt.AlignCenter)
-        self.small_blind_label.show()
+        # self.small_blind_label.show()
 
-        self.dealer_button_label = QtWidgets.QLabel(self.centralwidget)
         dealer_button_player_pos = player_positions[dealer_button_player_index]
         self.dealer_button_label.setGeometry(QtCore.QRect(
             dealer_button_player_pos[0] - 30, dealer_button_player_pos[1], 30, 30))
-        self.dealer_button_label.setStyleSheet(
-            "background-color: white; border-radius: 15px; color: black;")
-        self.dealer_button_label.setText("D")
-        self.dealer_button_label.setAlignment(QtCore.Qt.AlignCenter)
-        self.dealer_button_label.show()
+        # self.dealer_button_label.show()
 
     def displayCards(self, cards):
         self.p1_c1.setPixmap(QtGui.QPixmap(

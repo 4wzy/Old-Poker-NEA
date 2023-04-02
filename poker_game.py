@@ -57,10 +57,10 @@ class Game:
         self.minimum_raise_amount = self.big_blind_value * 2
         self.player_bets = {}
         self.players_in_round = self.players
-        self.big_blind_player_index = 0
         self.dealer_button_player_index = randint(
             0, len(self.players_in_round) - 1)
         self.small_blind_player_index = 0
+        self.big_blind_player_index = 0
 
     def get_player_cards(self):
         # Create poker card images
