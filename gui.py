@@ -415,50 +415,6 @@ class Ui_MainWindow(object):
             dealer_button_player_pos[0] - 30, dealer_button_player_pos[1], 30, 30))
         # self.dealer_button_label.show()
 
-    def animateBlinds(self, big_blind_player_index, small_blind_player_index, dealer_button_player_index, players_amount):
-        # In the parameters above, b = big (for big blind), s = small (for small blind), d = dealer (for dealer button)
-        # These parameters represent the new and old indexes for each of the blinds to animate
-
-        # These are the positions of the first card of each player
-        player_positions = [(390, 410), (70, 400), (30, 90),
-                            (390, 30), (720, 50), (690, 420)]
-
-        # Calculate the old indexes of each blind label
-        old_b = (big_blind_player_index - 1) % players_amount
-        old_s = (small_blind_player_index - 1) % players_amount
-        old_d = (dealer_button_player_index - 1) % players_amount
-
-        b_animation = QtCore.QPropertyAnimation(self.big_blind_label, b'pos')
-        b_animation.setDuration(2000)
-        b_animation.setStartValue(QtCore.QPoint(
-            player_positions[old_b][0], player_positions[old_b][1]))
-        b_animation.setEndValue(QtCore.QPoint(
-            player_positions[big_blind_player_index][0], player_positions[big_blind_player_index][1]))
-
-        s_animation = QtCore.QPropertyAnimation(self.small_blind_label, b'pos')
-        s_animation.setDuration(2000)
-        s_animation.setStartValue(QtCore.QPoint(
-            player_positions[old_s][0], player_positions[old_s][1]))
-        s_animation.setEndValue(QtCore.QPoint(
-            player_positions[small_blind_player_index][0], player_positions[small_blind_player_index][1]))
-
-        d_animation = QtCore.QPropertyAnimation(
-            self.dealer_button_label, b'pos')
-        d_animation.setDuration(2000)
-        d_animation.setStartValue(QtCore.QPoint(
-            player_positions[old_d][0], player_positions[old_d][1]))
-        d_animation.setEndValue(QtCore.QPoint(
-            player_positions[dealer_button_player_index][0], player_positions[dealer_button_player_index][1]))
-
-        # Start all 3 animations at the same time
-        group = QtCore.QParallelAnimationGroup()
-        group.addAnimation(b_animation)
-        group.addAnimation(s_animation)
-        group.addAnimation(d_animation)
-        # group.finished.connect(lambda: self.animateBlinds(
-        #     big_blind_player_index, small_blind_player_index, dealer_button_player_index, players_amount))
-        group.start()
-
     def displayCards(self, cards):
         self.p1_c1.setPixmap(QtGui.QPixmap(
             f"images/cards/{cards[0]}"))

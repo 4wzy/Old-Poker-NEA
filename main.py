@@ -9,11 +9,11 @@ def start_betting_round(game, round_type):
     # A way to fix this is to have another round_type, "last", where the blinds are not handled.
     game.handle_blinds()
 
+    ui.displayBlinds(game.big_blind_player_index,
+                     game.small_blind_player_index, game.dealer_button_player_index)
     ui.displayChips([player.chips for player in game.players])
 
     if round_type == "pre-flop":
-        ui.displayBlinds(game.big_blind_player_index,
-                         game.small_blind_player_index, game.dealer_button_player_index)
 
         current_player = (game.big_blind_player_index +
                           1) % len(game.players_in_round)
@@ -27,13 +27,6 @@ def start_betting_round(game, round_type):
                          ] = game.big_blind_value
 
     elif round_type == "post-flop":
-
-        ui.animateBlinds(
-            game.big_blind_player_index,
-            game.small_blind_player_index,
-            game.dealer_button_player_index,
-            len(game.players_in_round) - 1
-        )
 
         current_player = game.small_blind_player_index
         last_player = (game.dealer_button_player_index +
