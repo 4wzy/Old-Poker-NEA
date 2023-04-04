@@ -61,6 +61,7 @@ class Game:
             0, len(self.players_in_round) - 1)
         self.small_blind_player_index = 0
         self.big_blind_player_index = 0
+        self.current_highest_bet = 0
 
     def get_player_cards(self):
         # Create poker card images
