@@ -31,7 +31,7 @@ class Ui_MainWindow(object):
         self.Table.setScaledContents(True)
         self.Table.setObjectName("Table")
 
-        # self.displayBlinds()
+        bettingRoundFinishedSignal = QtCore.pyqtSignal()
 
     # Show user cards
 

@@ -56,12 +56,14 @@ class Game:
         self.deck.shuffle()
         self.minimum_raise_amount = self.big_blind_value * 2
         self.player_bets = {}
-        self.players_in_round = self.players
+        self.players_in_round = self.players.copy()
         self.dealer_button_player_index = randint(
             0, len(self.players_in_round) - 1)
         self.small_blind_player_index = 0
         self.big_blind_player_index = 0
         self.current_highest_bet = 0
+        self.action_done = False
+        self.last_player = 0
 
     def get_player_cards(self):
         # Create poker card images
@@ -106,9 +108,56 @@ class Game:
         self.players_in_round[self.small_blind_player_index].chips -= self.small_blind_value
         self.pot.add_chips(self.small_blind_value)
 
+    def do_action(self):
+        self.action_done = True
+
     def fold(self, player_index):
+        self.do_action()
         self.players_in_round.pop(player_index)
-        self.player_bets[self.players_in_round[player_index]] = -1
+        self.player_bets[self.players_in_round[player_index].name] = -1
+
+    def call(self, player):
+        self.do_action()
+        call_amount = self.current_highest_bet - \
+            self.player_bets[player.name]
+        # If the player has enough chips to call, put the appropriate amount of chips in the pot
+        if player.chips >= call_amount:
+            # Call
+            player.chips -= call_amount
+            self.pot.add_chips(call_amount)
+            self.player_bets[player.name] += call_amount
+        else:
+            # If the player DOES NOT have enough chips to call, go all in
+            remaining_chips = player.chips
+            self.pot.add_chips(
+                remaining_chips)
+            player.chips = 0
+            self.player_bets[player.name] += remaining_chips
+
+    def action_raise(self, player):
+        self.do_action()
+        # The player should only be able to raise up to the total amount of chips that they have.
+        # This could be implemented in the GUI as a slider, but for now
+        # I will implement a while loop that just asks the player for a raise_amount until it is valid.
+        if player.chips > self.current_highest_bet - self.player_bets[player.name]:
+            raise_amount = player.chips + 1
+            while raise_amount > player.chips or raise_amount <= (self.current_highest_bet - self.player_bets[player.name]) or raise_amount < self.minimum_raise_amount:
+                if raise_amount < self.minimum_raise_amount:
+                    print(
+                        f"Raise amount should be at least {self.minimum_raise_amount}")
+                raise_amount = int(input("Raise amount: "))
+
+            self.current_highest_bet = raise_amount + \
+                self.player_bets[player.name]
+            player.chips -= raise_amount
+            self.pot.add_chips(raise_amount)
+            self.player_bets[player.name] = self.current_highest_bet
+
+    def check(self, player):
+        self.do_action()
+        # Check if the current player's contribution to the pot is equal to the highest bet (check criteria)
+        if self.player_bets[player.name] == self.current_highest_bet:
+            pass
 
     def distribute_pot(self):
         pass
