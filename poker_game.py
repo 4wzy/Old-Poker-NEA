@@ -40,13 +40,16 @@ class Player:
         self.name = name
         self.chips = chips
         self.hand = Hand([])
+        self.is_all_in = False
+        self.has_folded = False
+        self.has_acted = False
 
     def add_card(self, card):
         self.hand.cards.append(card)
 
 
 class Game:
-    def __init__(self, player_names, starting_chips=500):
+    def __init__(self, player_names, starting_chips=100):
         self.players = [Player(name, starting_chips) for name in player_names]
         self.big_blind_value = 4
         self.small_blind_value = 2
@@ -62,8 +65,6 @@ class Game:
         self.small_blind_player_index = 0
         self.big_blind_player_index = 0
         self.current_highest_bet = 0
-        self.action_done = False
-        self.last_player = 0
 
     def get_player_cards(self):
         # Create poker card images
@@ -90,6 +91,24 @@ class Game:
             card = self.deck.deal_card()
             player.add_card(card)
 
+    def is_betting_round_over(self, current_player, last_player_index):
+        active_players = [
+            player for player in self.players_in_round if not player.has_folded]
+        active_player_chips_contributed = [
+            self.player_bets[player.name] for player in active_players if not player.is_all_in]
+        unique_chips = set(active_player_chips_contributed)
+
+        if len(active_players) == 1:
+            return True
+        elif len(unique_chips) == 1:
+            if current_player != last_player_index or not self.players_in_round[last_player_index].has_acted:
+                return False
+
+            return True
+        elif self.current_highest_bet == 0:
+            return True
+        return False
+
     def handle_blinds(self):
         amount_of_players = len(self.players_in_round)
 
@@ -108,67 +127,22 @@ class Game:
         self.players_in_round[self.small_blind_player_index].chips -= self.small_blind_value
         self.pot.add_chips(self.small_blind_value)
 
-    def do_action(self):
-        self.action_done = True
+    def fold(self, player_index, last_player):
+        self.players_in_round[player_index].has_folded = True
 
-    def fold(self, player_index):
-        self.do_action()
-        self.players_in_round.pop(player_index)
-        self.player_bets[self.players_in_round[player_index].name] = -1
+        # If the player who wants to fold is the last player who is supposed to bet,
+        # the last player will now be the next available person to the right
+        amount_of_players = len(self.players_in_round)
+        if player_index == last_player:
+            while self.players[last_player].has_folded:
+                last_player = (last_player - 1) % amount_of_players
 
-    def call(self, player):
-        self.do_action()
-        call_amount = self.current_highest_bet - \
-            self.player_bets[player.name]
-        # If the player has enough chips to call, put the appropriate amount of chips in the pot
-        if player.chips >= call_amount:
-            # Call
-            player.chips -= call_amount
-            self.pot.add_chips(call_amount)
-            self.player_bets[player.name] += call_amount
-        else:
-            # If the player DOES NOT have enough chips to call, go all in
-            remaining_chips = player.chips
-            self.pot.add_chips(
-                remaining_chips)
-            player.chips = 0
-            self.player_bets[player.name] += remaining_chips
+        return last_player
 
-    def action_raise(self, player):
-        self.do_action()
-        # The player should only be able to raise up to the total amount of chips that they have.
-        # This could be implemented in the GUI as a slider, but for now
-        # I will implement a while loop that just asks the player for a raise_amount until it is valid.
-        if player.chips > self.current_highest_bet - self.player_bets[player.name]:
-            raise_amount = player.chips + 1
-            while raise_amount > player.chips or raise_amount <= (self.current_highest_bet - self.player_bets[player.name]) or raise_amount < self.minimum_raise_amount:
-                if raise_amount < self.minimum_raise_amount:
-                    print(
-                        f"Raise amount should be at least {self.minimum_raise_amount}")
-                raise_amount = int(input("Raise amount: "))
-
-            self.current_highest_bet = raise_amount + \
-                self.player_bets[player.name]
-            player.chips -= raise_amount
-            self.pot.add_chips(raise_amount)
-            self.player_bets[player.name] = self.current_highest_bet
-
-    def check(self, player):
-        self.do_action()
-        # Check if the current player's contribution to the pot is equal to the highest bet (check criteria)
-        if self.player_bets[player.name] == self.current_highest_bet:
-            pass
+        # self.players_in_round.pop(player_index)
 
     def distribute_pot(self):
         pass
-
-    def are_bets_equal(self):
-        # Get a list of all unique bet amounts
-        unique_bets = set(
-            bet for bet in self.player_bets.values() if bet != -1)
-
-        # If there's only one unique bet, then all players have the same bet amount
-        return len(unique_bets) == 1
 
     def reset_bets(self):
         # Create variables to track each player's contribution to the pot and the current highest bet

@@ -31,7 +31,7 @@ class Ui_MainWindow(object):
         self.Table.setScaledContents(True)
         self.Table.setObjectName("Table")
 
-        bettingRoundFinishedSignal = QtCore.pyqtSignal()
+        # self.displayBlinds()
 
     # Show user cards
 
@@ -392,6 +392,40 @@ class Ui_MainWindow(object):
         self.p4_chips.setText(f"Chips: {chips[3]}")
         self.p5_chips.setText(f"Chips: {chips[4]}")
         self.p6_chips.setText(f"Chips: {chips[5]}")
+
+    def displayFolded(self, players):
+        for i in range(len(players) - 1):
+            if players[i].has_folded:
+                if i == 0:
+                    self.p1_c1.setPixmap(QtGui.QPixmap(
+                        f"images/cards/folded.jpg"))
+                    self.p1_c2.setPixmap(QtGui.QPixmap(
+                        f"images/cards/folded.jpg"))
+                elif i == 1:
+                    self.p2_c1.setPixmap(QtGui.QPixmap(
+                        f"images/cards/folded.jpg"))
+                    self.p2_c2.setPixmap(QtGui.QPixmap(
+                        f"images/cards/folded.jpg"))
+                elif i == 2:
+                    self.p3_c1.setPixmap(QtGui.QPixmap(
+                        f"images/cards/folded.jpg"))
+                    self.p3_c2.setPixmap(QtGui.QPixmap(
+                        f"images/cards/folded.jpg"))
+                elif i == 3:
+                    self.p4_c1.setPixmap(QtGui.QPixmap(
+                        f"images/cards/folded.jpg"))
+                    self.p4_c2.setPixmap(QtGui.QPixmap(
+                        f"images/cards/folded.jpg"))
+                elif i == 4:
+                    self.p5_c1.setPixmap(QtGui.QPixmap(
+                        f"images/cards/folded.jpg"))
+                    self.p5_c2.setPixmap(QtGui.QPixmap(
+                        f"images/cards/folded.jpg"))
+                elif i == 5:
+                    self.p6_c1.setPixmap(QtGui.QPixmap(
+                        f"images/cards/folded.jpg"))
+                    self.p6_c2.setPixmap(QtGui.QPixmap(
+                        f"images/cards/folded.jpg"))
 
     def displayBlinds(self, big_blind_player_index, small_blind_player_index, dealer_button_player_index):
         # These are the positions of the first card of each player
